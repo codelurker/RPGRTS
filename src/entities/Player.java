@@ -4,7 +4,6 @@ import map.CollisionTile;
 import map.Map;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
@@ -77,11 +76,6 @@ public class Player extends Entity {
 			}
 			fireTime = 0;
 		}
-		
-	}
-	
-	public void render(GameContainer container, StateBasedGame game_, Graphics g) {
-		getSprite().draw(getPosition().x, getPosition().y);
 	}
 	
 	public void handleCollisionWithEnemy(Enemy enemy) {

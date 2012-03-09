@@ -43,12 +43,14 @@ public class Map {
 					CollisionTile collisionTile = new CollisionTile(new Vector2f(x * tImg.getWidth(), y * tImg.getHeight()), tImg.getWidth(), tImg.getHeight());
 					collisionLayer.add(collisionTile);
 				}
-				Image spImg = tileMap.getTileImage(x,y, 2);
+				Image spImg = tileMap.getTileImage(x, y, 2);
 				if (spImg != null) {
 					entities.add(BuildingFactory.CreateSpawner(new Vector2f(x * spImg.getWidth(), y * spImg.getHeight()), SpawnerType.ENEMY1, this, 0));
 				}
 			}
 		}
+		
+		entities.add(BuildingFactory.CreateCommandCenter(new Vector2f(400, 300), this, 0));
 	}
 	
 	public void update(GameContainer container, StateBasedGame game_, int delay) {
@@ -85,10 +87,6 @@ public class Map {
 			currentEntity.update(container, game_, delay);
 			clampEntityToMap(currentEntity);
 		}
-		
-		/*for (int i = 0; i < spawnPoints.size(); i++) {
-			spawnPoints.get(i).update(delay);
-		}*/
 	}
 	
 	public void render(GameContainer container, StateBasedGame game_, Graphics g) {

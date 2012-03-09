@@ -3,7 +3,6 @@ package buildings;
 import map.Map;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -16,8 +15,8 @@ public class Spawner extends Building {
 	private int spawnTime = 0;
 	private int spawnRate = 1000; // MS
 	
-	public Spawner(Image sprite, Vector2f position, SpawnerType type, Map currentMap, int team) {
-		super(sprite, position, currentMap, team);
+	public Spawner(String name, Image sprite, Vector2f position, SpawnerType type, Map currentMap, int team) {
+		super(name, sprite, position, currentMap, team);
 		this.type = type;
 	}
 
@@ -28,11 +27,6 @@ public class Spawner extends Building {
 			System.out.println("Spawn enemy: " + type.toString());
 			spawnTime = 0;
 		}
-	}
-
-	@Override
-	public void render(GameContainer container, StateBasedGame game_, Graphics g) {
-		getSprite().draw(getPosition().x, getPosition().y);
 	}
 	
 	public SpawnerType getType() {

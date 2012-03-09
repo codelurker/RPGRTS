@@ -4,7 +4,6 @@ import map.CollisionTile;
 import map.Map;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -21,7 +20,7 @@ public class Bullet extends Entity {
 		super(sprite, owner.getPosition().copy(), map);
 		this.owner = owner;
 		speed = 250;
-		direction = new Vector2f(640, 400).sub(mouse);
+		direction = new Vector2f(512, 384).sub(mouse);
 		direction.normalise();
 		velocity = new Vector2f(direction.x * speed * -1, direction.y * speed * -1);
 	}
@@ -38,10 +37,6 @@ public class Bullet extends Entity {
 			getPosition().add(new Vector2f(velocity.x * (delay/1000.0f), velocity.y * (delay/1000.0f)));
 		else
 			getCurrentMap().removeEntity(this);
-	}
-	
-	public void render(GameContainer container, StateBasedGame game_, Graphics g) {
-		getSprite().draw(getPosition().x, getPosition().y);
 	}
 	
 	@Override

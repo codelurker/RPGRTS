@@ -12,7 +12,7 @@ public class BuildingFactory {
 		
 		try {
 			if (type == SpawnerType.ENEMY1) {
-				spawner = new Spawner(new Image("data/sprites/spawner-ENEMY1.png"), position, type, currentMap, team);
+				spawner = new Spawner("ENEMY1 Spawner", new Image("data/sprites/spawner-ENEMY1.png"), position, type, currentMap, team);
 				System.out.println("Creating new spawner");
 			}
 		} catch(SlickException e) {
@@ -20,5 +20,25 @@ public class BuildingFactory {
 		}
 		
 		return spawner;
+	}
+	
+	public static CommandCenter CreateCommandCenter(Vector2f position, Map currentMap, int team) {
+		CommandCenter cc = null;
+		
+		if (team == 0) { // Player team
+			try {
+				cc = new CommandCenter("Command Center", new Image("data/sprites/commandcenter-ally.png"), position, currentMap, team);
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+			cc = new CommandCenter("Command Center", new Image("data/sprites/commandcenter-enemy.png"), position, currentMap, team);
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return cc;
 	}
 }

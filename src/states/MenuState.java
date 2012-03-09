@@ -43,7 +43,7 @@ public class MenuState extends BasicGameState {
 		g.drawString("RPGRTS Game.", 350, 100);
 		for (MenuItem menuitem : menuItems) {
 			g.setFont(menuitem.getFont());
-			menuitem.getFont().drawString( menuitem.getPosition().x, menuitem.getPosition().y, menuitem.getText(), Color.white);
+			menuitem.getFont().drawString(menuitem.getPosition().x, menuitem.getPosition().y, menuitem.getText(), Color.white);
 		}
 	}
 	

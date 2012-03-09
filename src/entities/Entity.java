@@ -25,7 +25,9 @@ public class Entity {
 	}
 	
 	public void update(GameContainer container, StateBasedGame game_, int delay) { }
-	public void render(GameContainer container, StateBasedGame game_, Graphics g) { }
+	public void render(GameContainer container, StateBasedGame game_, Graphics g) { 
+		sprite.draw(getPosition().x, getPosition().y);
+	}
 	
 	public boolean collidesWith(Entity entity) {
 		if ((position.x + sprite.getWidth() > entity.getPosition().x && position.x < entity.getPosition().x  + entity.getSprite().getWidth()) 
