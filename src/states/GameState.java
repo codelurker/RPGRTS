@@ -44,6 +44,19 @@ public class GameState extends BasicGameState {
 	
 	@Override
 	public void update(GameContainer container, StateBasedGame game_, int delay) {
+		if (container.getInput().isKeyDown(Input.KEY_LEFT)) {
+			
+		}
+		if (container.getInput().isKeyDown(Input.KEY_RIGHT)) {
+			
+		}
+		if (container.getInput().isKeyDown(Input.KEY_UP)) {
+			
+		}
+		if (container.getInput().isKeyDown(Input.KEY_DOWN)) {
+			
+		}
+		
 		if (container.getInput().isKeyPressed(Input.KEY_B)) {
 			System.out.println("Pressed B");
 		}

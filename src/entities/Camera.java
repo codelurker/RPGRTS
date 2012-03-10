@@ -18,6 +18,15 @@ public class Camera {
 			position.y -= 10;
 		if (mousey <= 50)
 			position.y += 10;
+		
+		if (position.x > (mapWidth * 32) / 2)
+			position.x = (mapWidth * 32) / 2;
+		if (position.x < -((mapWidth * 32) / 2))
+			position.x = -((mapWidth * 32) / 2);
+		if (position.y > (mapHeight * 32) / 2)
+			position.y = (mapHeight * 32) / 2;
+		if (position.y < -((mapHeight * 32) / 2))
+			position.y = -((mapHeight * 32) / 2);
 	}
 	
 	public Vector2f getPosition() {
