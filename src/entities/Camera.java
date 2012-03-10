@@ -9,8 +9,15 @@ public class Camera {
 		this.position = position;
 	}
 	
-	public void update(Player player) {
-		setPosition(new Vector2f(player.getPosition().x, player.getPosition().y));
+	public void update(int mousex, int mousey, int mapWidth, int mapHeight) {
+		if (mousex >= 1024 - 50)
+			position.x -= 10;
+		if (mousex <= 50)
+			position.x += 10;
+		if (mousey >= mapHeight * 32 - 40)
+			position.y -= 10;
+		if (mousey <= 50)
+			position.y += 10;
 	}
 	
 	public Vector2f getPosition() {

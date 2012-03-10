@@ -30,12 +30,7 @@ public class GameState extends BasicGameState {
 	public void init(GameContainer container, StateBasedGame game_) {
 		currentMap = new Map(1, "DebugMap");
 		
-		try {
-			player = new Player(new Vector2f(container.getWidth() / 2 + 40, container.getHeight() / 2), new Image("data/sprites/player.png"), currentMap);
-		} catch(SlickException e) {
-			e.printStackTrace();
-		}
-		currentMap.addEntity(player);
+		player = new Player(currentMap);
 		
 		try {
 			Enemy enemy = new Enemy(new Vector2f(200,200), new Image("data/sprites/enemy-1.png"), currentMap);
@@ -44,7 +39,7 @@ public class GameState extends BasicGameState {
 			e.printStackTrace();
 		}
 		
-		camera = new Camera(new Vector2f(container.getWidth() / 2, container.getHeight() / 2));
+		camera = new Camera(new Vector2f(0,0));
 	}
 	
 	@Override
@@ -53,13 +48,13 @@ public class GameState extends BasicGameState {
 			System.out.println("Pressed B");
 		}
 		
-		camera.update((Player)currentMap.getEntities(Player.class).get(0));
+		camera.update(container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY(), currentMap.getTileMap().getWidth(), currentMap.getTileMap().getHeight());
 		currentMap.update(container, game_, delay);
 	}
 	
 	@Override
 	public void render(GameContainer container, StateBasedGame game_, Graphics g) {
-		g.translate((container.getWidth() / 2) - camera.getPosition().x, (container.getHeight() / 2) - camera.getPosition().y);
+		g.translate(camera.getPosition().x, camera.getPosition().y);
 		currentMap.render(container, game_, g);
 		g.resetTransform();
 		g.fillRect(0, container.getHeight() - 100, container.getWidth(), 100);

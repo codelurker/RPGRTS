@@ -15,6 +15,7 @@ import buildings.BuildingFactory;
 import buildings.SpawnerType;
 
 import entities.Bullet;
+import entities.Camera;
 import entities.Enemy;
 import entities.Entity;
 import entities.Player;
@@ -56,31 +57,12 @@ public class Map {
 	public void update(GameContainer container, StateBasedGame game_, int delay) {
 		for (int i = 0; i < entities.size(); i++) {
 			Entity currentEntity = entities.get(i);
-			Player player = (Player)getEntities(Player.class).get(0);
 			
 			// Check for collision for enemies
 			if (currentEntity instanceof Enemy) {
 				
-				// Handle collision between player and enemies
-				if (player.collidesWith(currentEntity)) {
-					player.handleCollisionWithEnemy((Enemy)currentEntity);
-				}
-				
 				for (Entity entity : getEntities(Bullet.class)) {
 					Bullet bullet = (Bullet) entity;
-					
-					// Handle collision between player's bullets and enemy
-					if (bullet.getOwner() == player) {
-						if (bullet.collidesWith(currentEntity)) {
-							bullet.setCollided(true);
-							((Enemy)currentEntity).handleCollisionWithPlayerBullets();
-						}
-					// Handle collision between enemies bullets and player
-					} else if (bullet.getOwner() == currentEntity) {
-						if (bullet.collidesWith(player)) {
-							System.out.println("Enemy bullet collides with player");
-						}
-					}
 				}
 			}
 			
@@ -91,6 +73,7 @@ public class Map {
 	
 	public void render(GameContainer container, StateBasedGame game_, Graphics g) {
 		tileMap.render(0, 0);
+		
 		for (CollisionTile collision : collisionLayer) {
 			g.drawRect(collision.getPosition().x, collision.getPosition().y, 32, 32);
 		}

@@ -16,11 +16,11 @@ public class Bullet extends Entity {
 	private Entity owner;
 	private Vector2f direction;
 	
-	public Bullet(Image sprite, Entity owner, Vector2f mouse, Map map) {
+	public Bullet(Image sprite, Entity owner, Vector2f target, Map map) {
 		super(sprite, owner.getPosition().copy(), map);
 		this.owner = owner;
 		speed = 250;
-		direction = new Vector2f(512, 384).sub(mouse);
+		direction = new Vector2f(512, 384).sub(target);
 		direction.normalise();
 		velocity = new Vector2f(direction.x * speed * -1, direction.y * speed * -1);
 	}
