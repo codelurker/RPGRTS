@@ -27,7 +27,7 @@ public class BuildingFactory {
 		
 		if (team == 0) { // Player team
 			try {
-				cc = new CommandCenter("Command Center", new Image("data/sprites/commandcenter-ally.png"), position, currentMap, team);
+				cc = new CommandCenter("Command Center", new Image("data/sprites/COMMAND_CENTER_ALLY.png"), position, currentMap, team);
 			} catch (SlickException e) {
 				e.printStackTrace();
 			}
