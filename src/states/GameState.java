@@ -3,6 +3,7 @@ package states;
 import java.util.ArrayList;
 import java.util.List;
 
+import map.CollisionTile;
 import map.Map;
 
 import org.newdawn.slick.GameContainer;
@@ -81,6 +82,8 @@ public class GameState extends BasicGameState {
 		camera.update(container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY(), currentMap.getTileMap().getWidth(), currentMap.getTileMap().getHeight());
 		currentMap.update(container, game_, delay);
 		
+		Vector2f worldMousePosition = new Vector2f(container.getInput().getMouseX() - camera.getPosition().x, container.getInput().getMouseY() - camera.getPosition().y);
+		
 		if (!building) {
 			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				if (container.getInput().getAbsoluteMouseY() >= 600) {
@@ -95,8 +98,27 @@ public class GameState extends BasicGameState {
 			}
 		} else {
 			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				currentMap.addEntity(new Building(requestedBuilding.toString(), ResourceManager.getBuildingSprite(requestedBuilding), new Vector2f(container.getInput().getAbsoluteMouseX() + camera.getPosition().x, container.getInput().getAbsoluteMouseY() + camera.getPosition().y), currentMap, 0));
-				building = false;
+				boolean validPlacement = true;
+				
+				for (CollisionTile tile : currentMap.getCollisionLayer()) {
+					if ((worldMousePosition.x + ResourceManager.getBuildingSprite(requestedBuilding).getWidth() >= tile.getPosition().x && worldMousePosition.x <= tile.getPosition().x + tile.getWidth()) 
+							&& (worldMousePosition.y + ResourceManager.getBuildingSprite(requestedBuilding).getWidth() >= tile.getPosition().y && worldMousePosition.y <= tile.getPosition().y + tile.getHeight())) {
+						validPlacement = false;
+						break;
+					}
+				}
+				
+				System.out.println(ResourceManager.getBuildingSprite(requestedBuilding).getWidth());
+				if (validPlacement) {
+					currentMap.addEntity(
+							new Building(
+									requestedBuilding.toString(),
+									ResourceManager.getBuildingSprite(requestedBuilding),
+									worldMousePosition,
+									currentMap, 0)
+							);
+					building = false;
+				}
 			}	
 		}
 	}
@@ -115,7 +137,8 @@ public class GameState extends BasicGameState {
 		}
 		
 		if (building) {
-			ResourceManager.getBuildingSprite(requestedBuilding).draw(container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY());
+			if (container.getInput().getAbsoluteMouseY() <= 670)
+				ResourceManager.getBuildingSprite(requestedBuilding).draw(container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY());
 		}
 		
 	}
