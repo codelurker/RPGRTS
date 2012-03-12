@@ -17,10 +17,12 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import buildings.Building;
 
+import util.CollisionHelper;
 import util.ResourceManager;
 
 import entities.Camera;
 import entities.Enemy;
+import entities.Entity;
 import entities.Player;
 import gui.BuildingIcon;
 import gui.BuildingType;
@@ -88,10 +90,11 @@ public class GameState extends BasicGameState {
 			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 				if (container.getInput().getAbsoluteMouseY() >= 600) {
 					for (BuildingIcon icon : buildingIcons) {
-						if ((container.getInput().getAbsoluteMouseX() >= icon.getPosition().x && container.getInput().getAbsoluteMouseX() <= icon.getPosition().x + icon.getSprite().getWidth())
-								&& (container.getInput().getAbsoluteMouseY() >= icon.getPosition().y && container.getInput().getAbsoluteMouseY() <= icon.getPosition().y + icon.getSprite().getHeight())) {
-									requestedBuilding = icon.getType();
-									building = true;
+						if (CollisionHelper.intersectingShapes(
+								(int)container.getInput().getMouseX(), (int)container.getInput().getMouseY(), 0, 0,
+								(int)icon.getPosition().x, (int)icon.getPosition().y, icon.getSprite().getWidth(), icon.getSprite().getHeight())) {
+							requestedBuilding = icon.getType();
+							building = true;							
 						}
 					}
 				}		
@@ -101,14 +104,23 @@ public class GameState extends BasicGameState {
 				boolean validPlacement = true;
 				
 				for (CollisionTile tile : currentMap.getCollisionLayer()) {
-					if ((worldMousePosition.x + ResourceManager.getBuildingSprite(requestedBuilding).getWidth() >= tile.getPosition().x && worldMousePosition.x <= tile.getPosition().x + tile.getWidth()) 
-							&& (worldMousePosition.y + ResourceManager.getBuildingSprite(requestedBuilding).getWidth() >= tile.getPosition().y && worldMousePosition.y <= tile.getPosition().y + tile.getHeight())) {
+					if (CollisionHelper.intersectingShapes(
+							(int)worldMousePosition.x, (int)worldMousePosition.y, ResourceManager.getBuildingSprite(requestedBuilding).getWidth(), ResourceManager.getBuildingSprite(requestedBuilding).getHeight(),
+							(int)tile.getPosition().x, (int)tile.getPosition().y, tile.getWidth(), tile.getHeight())) {
 						validPlacement = false;
-						break;
+						break;						
 					}
 				}
 				
-				System.out.println(ResourceManager.getBuildingSprite(requestedBuilding).getWidth());
+				for (Entity building : currentMap.getEntities(Building.class)) {
+					if (CollisionHelper.intersectingShapes(
+							(int)worldMousePosition.x, (int)worldMousePosition.y, ResourceManager.getBuildingSprite(requestedBuilding).getWidth(), ResourceManager.getBuildingSprite(requestedBuilding).getHeight(),
+							(int)building.getPosition().x, (int)building.getPosition().y, building.getSprite().getWidth(), building.getSprite().getHeight())) {
+						validPlacement = false;
+						break;					
+					}				
+				}
+				
 				if (validPlacement) {
 					currentMap.addEntity(
 							new Building(

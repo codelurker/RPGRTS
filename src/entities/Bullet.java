@@ -8,6 +8,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import util.CollisionHelper;
+
 public class Bullet extends Entity {
 	
 	private int speed;
@@ -27,8 +29,8 @@ public class Bullet extends Entity {
 	
 	public void update(GameContainer container, StateBasedGame game_, int delay) {
 		for (CollisionTile collision : getCurrentMap().getCollisionLayer()) {
-			if ((getPosition().x + getSprite().getWidth() > collision.getPosition().x && getPosition().x < collision.getPosition().x + collision.getWidth())
-					&& (getPosition().y + getSprite().getHeight() > collision.getPosition().y && getPosition().y < collision.getPosition().y + collision.getHeight())) {
+			if (CollisionHelper.intersectingShapes((int)getPosition().x, (int)getPosition().y, getSprite().getWidth(), getSprite().getHeight(),
+					(int)collision.getPosition().x, (int)collision.getPosition().y, collision.getWidth(), collision.getHeight())) {
 				setCollided(true);
 			}
 		}
