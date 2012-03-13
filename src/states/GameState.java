@@ -1,9 +1,8 @@
 package states;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import map.CollisionTile;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import map.Map;
 
 import org.newdawn.slick.GameContainer;
@@ -15,17 +14,11 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import buildings.Building;
-
-import util.CollisionHelper;
-import util.ResourceManager;
-
 import entities.Camera;
 import entities.Enemy;
-import entities.Entity;
 import entities.Player;
-import gui.BuildingIcon;
-import gui.BuildingType;
+import gui.BuildingMenu;
+import gui.GUIMenu;
 
 public class GameState extends BasicGameState {
 
@@ -33,9 +26,7 @@ public class GameState extends BasicGameState {
 	private Player player;
 	private Camera camera;
 	
-	private List<BuildingIcon> buildingIcons = new ArrayList<BuildingIcon>();
-	private boolean building = false;
-	private BuildingType requestedBuilding;
+	private java.util.Map<String, GUIMenu> menus = new HashMap<String, GUIMenu>();
 	
 	@Override
 	public int getID() {
@@ -55,11 +46,10 @@ public class GameState extends BasicGameState {
 			e.printStackTrace();
 		}
 		
-		buildingIcons.add(new BuildingIcon(BuildingType.COMMAND_CENTER_ALLY, ResourceManager.getBuildingSprite(BuildingType.COMMAND_CENTER_ALLY), new Vector2f(300, 700)));
-		
 		camera = new Camera(new Vector2f(0,0));
 		
-		ResourceManager.getBuildingSprite(BuildingType.COMMAND_CENTER_ALLY);
+		BuildingMenu buildingMenu = new BuildingMenu(1, "Building", new Vector2f(0,0));
+		menus.put("Building", buildingMenu);
 	}
 	
 	@Override
@@ -84,55 +74,14 @@ public class GameState extends BasicGameState {
 		camera.update(container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY(), currentMap.getTileMap().getWidth(), currentMap.getTileMap().getHeight());
 		currentMap.update(container, game_, delay);
 		
-		Vector2f worldMousePosition = new Vector2f(container.getInput().getMouseX() - camera.getPosition().x, container.getInput().getMouseY() - camera.getPosition().y);
-		
-		if (!building) {
-			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				if (container.getInput().getAbsoluteMouseY() >= 600) {
-					for (BuildingIcon icon : buildingIcons) {
-						if (CollisionHelper.intersectingShapes(
-								(int)container.getInput().getMouseX(), (int)container.getInput().getMouseY(), 0, 0,
-								(int)icon.getPosition().x, (int)icon.getPosition().y, icon.getSprite().getWidth(), icon.getSprite().getHeight())) {
-							requestedBuilding = icon.getType();
-							building = true;							
-						}
-					}
-				}		
-			}
-		} else {
-			if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-				boolean validPlacement = true;
-				
-				for (CollisionTile tile : currentMap.getCollisionLayer()) {
-					if (CollisionHelper.intersectingShapes(
-							(int)worldMousePosition.x, (int)worldMousePosition.y, ResourceManager.getBuildingSprite(requestedBuilding).getWidth(), ResourceManager.getBuildingSprite(requestedBuilding).getHeight(),
-							(int)tile.getPosition().x, (int)tile.getPosition().y, tile.getWidth(), tile.getHeight())) {
-						validPlacement = false;
-						break;						
-					}
-				}
-				
-				for (Entity building : currentMap.getEntities(Building.class)) {
-					if (CollisionHelper.intersectingShapes(
-							(int)worldMousePosition.x, (int)worldMousePosition.y, ResourceManager.getBuildingSprite(requestedBuilding).getWidth(), ResourceManager.getBuildingSprite(requestedBuilding).getHeight(),
-							(int)building.getPosition().x, (int)building.getPosition().y, building.getSprite().getWidth(), building.getSprite().getHeight())) {
-						validPlacement = false;
-						break;					
-					}				
-				}
-				
-				if (validPlacement) {
-					currentMap.addEntity(
-							new Building(
-									requestedBuilding.toString(),
-									ResourceManager.getBuildingSprite(requestedBuilding),
-									worldMousePosition,
-									currentMap, 0)
-							);
-					building = false;
-				}
-			}	
+		Iterator<Entry<String, GUIMenu>> it = menus.entrySet().iterator();
+		while (it.hasNext()) {
+			java.util.Map.Entry entry = (java.util.Map.Entry) it.next();
+			GUIMenu menu = (GUIMenu)entry.getValue();
+			if (menu.isActive())
+				menu.update(container, game_, delay, player, camera);
 		}
+		
 	}
 	
 	@Override
@@ -143,15 +92,13 @@ public class GameState extends BasicGameState {
 		g.resetTransform();
 		
 		g.fillRect(0, container.getHeight() - 100, container.getWidth(), 100);
-		
-		for (BuildingIcon icon : buildingIcons) {
-			icon.render(g);
+
+		Iterator<Entry<String, GUIMenu>> it = menus.entrySet().iterator();
+		while (it.hasNext()) {
+			java.util.Map.Entry entry = (java.util.Map.Entry) it.next();
+			GUIMenu menu = (GUIMenu)entry.getValue();
+			if (menu.isActive())
+				menu.render(container, game_, g, player);
 		}
-		
-		if (building) {
-			if (container.getInput().getAbsoluteMouseY() <= 670)
-				ResourceManager.getBuildingSprite(requestedBuilding).draw(container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY());
-		}
-		
 	}
 }

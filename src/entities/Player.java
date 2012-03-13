@@ -9,9 +9,11 @@ public class Player {
 	
 	//private float FIRE_DELAY = 0.1F;
 	//private float fireTime = 0.0F;
+	private boolean building = false;
+	private Map currentMap;
 	
 	public Player(Map map) {
-		
+		currentMap = map;
 	}
 
 	public void update(GameContainer container, StateBasedGame game_, int delay) {
@@ -27,5 +29,21 @@ public class Player {
 			}
 			fireTime = 0;
 		}*/
+	}
+	
+	public boolean isBuilding() {
+		return building;
+	}
+
+	public void setBuilding(boolean building) {
+		this.building = building;
+	}
+
+	public Map getCurrentMap() {
+		return currentMap;
+	}
+
+	public void setCurrentMap(Map currentMap) {
+		this.currentMap = currentMap;
 	}
 }

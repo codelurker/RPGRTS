@@ -15,10 +15,8 @@ import buildings.BuildingFactory;
 import buildings.SpawnerType;
 
 import entities.Bullet;
-import entities.Camera;
 import entities.Enemy;
 import entities.Entity;
-import entities.Player;
 
 public class Map {
 	private int id;
