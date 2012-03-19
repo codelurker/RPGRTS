@@ -1,4 +1,4 @@
-package gui;
+package gui.building;
 
 public enum BuildingType {
 	COMMAND_CENTER_ALLY(0);

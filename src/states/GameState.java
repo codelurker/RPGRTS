@@ -1,8 +1,5 @@
 package states;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 import map.Map;
 
 import org.newdawn.slick.GameContainer;
@@ -14,11 +11,17 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import util.ResourceManager;
+
 import entities.Camera;
 import entities.Enemy;
 import entities.Player;
-import gui.BuildingMenu;
-import gui.GUIMenu;
+import gui.building.BuildingIcon;
+import gui.building.BuildingType;
+import gui.building.BuildingWindow;
+import gui.core.GUIContainer;
+import gui.events.GUIComponentClickEvent;
+import gui.events.GUIComponentClickEventListener;
 
 public class GameState extends BasicGameState {
 
@@ -26,7 +29,7 @@ public class GameState extends BasicGameState {
 	private Player player;
 	private Camera camera;
 	
-	private java.util.Map<String, GUIMenu> menus = new HashMap<String, GUIMenu>();
+	private GUIContainer guiContainer;
 	
 	@Override
 	public int getID() {
@@ -48,8 +51,36 @@ public class GameState extends BasicGameState {
 		
 		camera = new Camera(new Vector2f(0,0));
 		
-		BuildingMenu buildingMenu = new BuildingMenu(1, "Building", new Vector2f(0,0));
-		menus.put("Building", buildingMenu);
+		guiContainer = new GUIContainer();
+		try {
+			
+			final BuildingWindow buildingWindow = new BuildingWindow("building_window", new Vector2f(0, container.getHeight() - 100), new Image("data/sprites/main-window-bg.png"));
+			buildingWindow.setEnabled(true);
+			
+			BuildingIcon test_icon = new BuildingIcon(
+							"command_center_icon",
+							BuildingType.COMMAND_CENTER_ALLY,
+							new Image("data/sprites/COMMAND_CENTER_ALLY_ICON.png"),
+							new Vector2f(300, 10)
+							);
+			
+			test_icon.setEnabled(true);
+			test_icon.addListener(new GUIComponentClickEventListener() {
+				public void componentClicked(GUIComponentClickEvent e) {
+					if (e.getSource() instanceof BuildingIcon) {
+						BuildingIcon source = (BuildingIcon) e.getSource();
+						player.setBuilding(true);
+						player.setRequestedBuilding(source.getType());
+					}
+				}
+			});
+			buildingWindow.addComponent(test_icon);
+			
+			guiContainer.addWindow(buildingWindow);
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	@Override
@@ -73,14 +104,8 @@ public class GameState extends BasicGameState {
 		
 		camera.update(container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY(), currentMap.getTileMap().getWidth(), currentMap.getTileMap().getHeight());
 		currentMap.update(container, game_, delay);
-		
-		Iterator<Entry<String, GUIMenu>> it = menus.entrySet().iterator();
-		while (it.hasNext()) {
-			java.util.Map.Entry entry = (java.util.Map.Entry) it.next();
-			GUIMenu menu = (GUIMenu)entry.getValue();
-			if (menu.isActive())
-				menu.update(container, game_, delay, player, camera);
-		}
+		player.update(container, game_, delay, camera);
+		guiContainer.update(container, game_, delay, camera);
 		
 	}
 	
@@ -91,14 +116,10 @@ public class GameState extends BasicGameState {
 		
 		g.resetTransform();
 		
-		g.fillRect(0, container.getHeight() - 100, container.getWidth(), 100);
-
-		Iterator<Entry<String, GUIMenu>> it = menus.entrySet().iterator();
-		while (it.hasNext()) {
-			java.util.Map.Entry entry = (java.util.Map.Entry) it.next();
-			GUIMenu menu = (GUIMenu)entry.getValue();
-			if (menu.isActive())
-				menu.render(container, game_, g, player);
+		if (player.isBuilding()) {
+			if (container.getInput().getAbsoluteMouseY() <= 670)
+				ResourceManager.getBuildingSprite(player.getRequestedBuilding()).draw(container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY());
 		}
+		guiContainer.render(container, game_, g);
 	}
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import gui.BuildingType;
+import gui.building.BuildingType;
 
 public class ResourceManager {
 	public static Map<BuildingType, Image> buildingSprites = new HashMap<BuildingType, Image>();
@@ -31,5 +31,20 @@ public class ResourceManager {
 				return null;
 			}
 		}
+	}
+	
+	public static Image getBuildingIconSprite(BuildingType type) {
+		if (buildingSprites.containsKey(type)) {
+			return buildingSprites.get(type);
+		} else {
+			try {
+				Image building = new Image("data/sprites/" + type.toString() + ".png");
+				buildingSprites.put(type, building);
+				return buildingSprites.get(type);
+			} catch (SlickException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}		
 	}
 }
