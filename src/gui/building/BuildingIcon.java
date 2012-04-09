@@ -2,16 +2,12 @@ package gui.building;
 
 import entities.Camera;
 import gui.core.GUIImage;
-import gui.events.GUIComponentClickEvent;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
-
-import util.CollisionHelper;
 
 public class BuildingIcon extends GUIImage {
 	
@@ -24,13 +20,6 @@ public class BuildingIcon extends GUIImage {
 	
 	@Override
 	public void update(GameContainer container, StateBasedGame game_, int delay, Camera camera) {
-		if (container.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
-			if (CollisionHelper.intersectingShapes(
-					container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY(), 0, 0, 
-					(int)getPosition().x, (int)getPosition().y, getImage().getWidth(), getImage().getHeight())) {
-				this.clickEvent(new GUIComponentClickEvent(this, container.getInput().getMouseX(), container.getInput().getMouseY()));
-			}
-		}
 	}
 	
 	public void render(Graphics g) {

@@ -11,6 +11,9 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 
+import util.CollisionHelper;
+
+import buildings.Building;
 import buildings.BuildingFactory;
 import buildings.SpawnerType;
 
@@ -58,6 +61,18 @@ public class Map {
 			
 			// Check for collision for enemies
 			if (currentEntity instanceof Enemy) {
+				for (Entity entity : getEntities(Building.class)) {
+					Building building = (Building) entity;
+					if (CollisionHelper.intersectingShapes(
+							(int)currentEntity.getPosition().x, 
+							(int)currentEntity.getPosition().y, 
+							currentEntity.getSprite().getWidth(), 
+							currentEntity.getSprite().getHeight(), 
+							(int)building.getPosition().x, (int)building.getPosition().y, building.getSprite().getWidth(), building.getSprite().getHeight())) {
+
+						entities.get(i).setCollided(true);
+					}
+				}
 				
 				for (Entity entity : getEntities(Bullet.class)) {
 					Bullet bullet = (Bullet) entity;

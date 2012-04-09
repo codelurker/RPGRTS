@@ -7,6 +7,10 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import entities.Enemy;
+
+import util.ResourceManager;
+
 
 
 public class Spawner extends Building {
@@ -14,6 +18,7 @@ public class Spawner extends Building {
 	
 	private int spawnTime = 0;
 	private int spawnRate = 1000; // MS
+	private int spawns = 0;
 	
 	public Spawner(String name, Image sprite, Vector2f position, SpawnerType type, Map currentMap, int team) {
 		super(name, sprite, position, currentMap, team);
@@ -24,8 +29,11 @@ public class Spawner extends Building {
 	public void update(GameContainer container, StateBasedGame game_, int delay) {
 		spawnTime += delay;
 		if (spawnTime > spawnRate) {
-			System.out.println("Spawn enemy: " + type.toString());
-			spawnTime = 0;
+			if (spawns < 3) {
+				getCurrentMap().addEntity(new Enemy(getPosition(), ResourceManager.getEnemySprite(SpawnerType.ENEMY1), getCurrentMap()));
+				spawnTime = 0;
+				spawns++;
+			}
 		}
 	}
 	

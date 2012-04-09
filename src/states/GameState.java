@@ -1,11 +1,12 @@
 package states;
 
+import java.awt.Dimension;
+
 import map.Map;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
@@ -39,8 +40,11 @@ public class GameState extends BasicGameState {
 	@Override
 	public void init(GameContainer container, StateBasedGame game_) {
 		currentMap = new Map(1, "DebugMap");
+
+		camera = new Camera(new Vector2f(0,0));
 		
-		player = new Player(currentMap);
+		player = new Player(currentMap, camera);
+		container.getInput().addMouseListener(player);
 		
 		try {
 			Enemy enemy = new Enemy(new Vector2f(200,200), new Image("data/sprites/enemy-1.png"), currentMap);
@@ -49,12 +53,10 @@ public class GameState extends BasicGameState {
 			e.printStackTrace();
 		}
 		
-		camera = new Camera(new Vector2f(0,0));
-		
 		guiContainer = new GUIContainer();
 		try {
 			
-			final BuildingWindow buildingWindow = new BuildingWindow("building_window", new Vector2f(0, container.getHeight() - 100), new Image("data/sprites/main-window-bg.png"));
+			BuildingWindow buildingWindow = new BuildingWindow("building_window", new Vector2f(0, container.getHeight() - 100), new Image("data/sprites/main-window-bg.png"));
 			buildingWindow.setEnabled(true);
 			
 			BuildingIcon test_icon = new BuildingIcon(
@@ -74,8 +76,27 @@ public class GameState extends BasicGameState {
 					}
 				}
 			});
+			test_icon.setSize(new Dimension(test_icon.getImage().getWidth(), test_icon.getImage().getHeight()));
 			buildingWindow.addComponent(test_icon);
 			
+			BuildingIcon turretIcon = new BuildingIcon(
+					"basic_turret_icon",
+					BuildingType.BASIC_TURRET_ALLY,
+					new Image("data/sprites/BASIC_TURRET_ALLY_ICON.png"),
+					new Vector2f(350, 10));
+			turretIcon.setEnabled(true);
+			turretIcon.addListener(new GUIComponentClickEventListener() {
+				public void componentClicked(GUIComponentClickEvent e) {
+					if (e.getSource() instanceof BuildingIcon) {
+						BuildingIcon source = (BuildingIcon) e.getSource();
+						player.setBuilding(true);
+						player.setRequestedBuilding(source.getType());
+					}
+				}
+			});
+			turretIcon.setSize(new Dimension(turretIcon.getImage().getWidth(), turretIcon.getImage().getHeight()));
+			buildingWindow.addComponent(turretIcon);
+			container.getInput().addMouseListener(buildingWindow);
 			guiContainer.addWindow(buildingWindow);
 		} catch (SlickException e) {
 			e.printStackTrace();
@@ -85,26 +106,10 @@ public class GameState extends BasicGameState {
 	
 	@Override
 	public void update(GameContainer container, StateBasedGame game_, int delay) {
-		if (container.getInput().isKeyDown(Input.KEY_LEFT)) {
-			
-		}
-		if (container.getInput().isKeyDown(Input.KEY_RIGHT)) {
-			
-		}
-		if (container.getInput().isKeyDown(Input.KEY_UP)) {
-			
-		}
-		if (container.getInput().isKeyDown(Input.KEY_DOWN)) {
-			
-		}
-		
-		if (container.getInput().isKeyPressed(Input.KEY_B)) {
-			System.out.println("Pressed B");
-		}
 		
 		camera.update(container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY(), currentMap.getTileMap().getWidth(), currentMap.getTileMap().getHeight());
 		currentMap.update(container, game_, delay);
-		player.update(container, game_, delay, camera);
+		player.update(container, game_, delay);
 		guiContainer.update(container, game_, delay, camera);
 		
 	}
