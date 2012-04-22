@@ -12,6 +12,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import buildings.Building;
+import buildings.BuildingFactory;
 
 import util.CollisionHelper;
 import util.ResourceManager;
@@ -140,13 +141,9 @@ public class Player implements MouseListener {
 			}
 			
 			if (validPlacement) {
-				currentMap.addEntity(
-						new Building(
-								requestedBuilding.toString(),
-								ResourceManager.getBuildingSprite(requestedBuilding),
-								worldMousePosition,
-								currentMap, 0)
-						);
+				
+				currentMap.addEntity((Entity) BuildingFactory.getBuilding(requestedBuilding, worldMousePosition, currentMap));
+				//new Building(requestedBuilding.toString(), ResourceManager.getBuildingSprite(requestedBuilding), worldMousePosition, currentMap, 0));
 				building = false;
 			}
 		} else {

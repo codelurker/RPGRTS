@@ -20,6 +20,7 @@ import buildings.SpawnerType;
 import entities.Bullet;
 import entities.Enemy;
 import entities.Entity;
+import gui.building.BuildingType;
 
 public class Map {
 	private int id;
@@ -56,11 +57,15 @@ public class Map {
 	}
 	
 	public void update(GameContainer container, StateBasedGame game_, int delay) {
+		
+		List<Entity> entitiesToRemove = new ArrayList<Entity>();
+		
 		for (int i = 0; i < entities.size(); i++) {
 			Entity currentEntity = entities.get(i);
 			
 			// Check for collision for enemies
 			if (currentEntity instanceof Enemy) {
+				// Check for collision between enemy and buildings
 				for (Entity entity : getEntities(Building.class)) {
 					Building building = (Building) entity;
 					if (CollisionHelper.intersectingShapes(
@@ -74,14 +79,29 @@ public class Map {
 					}
 				}
 				
+				// Collision between enemy and bullets
 				for (Entity entity : getEntities(Bullet.class)) {
 					Bullet bullet = (Bullet) entity;
+					if (CollisionHelper.intersectingShapes(
+							(int)currentEntity.getPosition().x, (int)currentEntity.getPosition().y, 
+							currentEntity.getSprite().getWidth(), currentEntity.getSprite().getHeight(),
+							(int)bullet.getPosition().x, (int)bullet.getPosition().y, 
+							bullet.getSprite().getWidth(), bullet.getSprite().getHeight())) {
+						
+						bullet.setAlive(false);
+						currentEntity.setAlive(false);
+						entitiesToRemove.add(bullet);
+						entitiesToRemove.add(currentEntity);
+					}
 				}
 			}
 			
 			currentEntity.update(container, game_, delay);
 			clampEntityToMap(currentEntity);
 		}
+		
+		if (entitiesToRemove.size() > 0)
+			entities.removeAll(entitiesToRemove);
 	}
 	
 	public void render(GameContainer container, StateBasedGame game_, Graphics g) {
@@ -180,6 +200,14 @@ public class Map {
 		
 		if (collidedWithBounds)
 			entity.handleMapBoundCollision();
-	 
+	}
+	
+	public void addBuilding(BuildingType type, Vector2f position, int team) {
+		switch(type) {
+			case BASIC_TURRET_ALLY:
+				
+				break;
+		}
+		
 	}
 }

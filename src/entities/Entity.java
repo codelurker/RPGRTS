@@ -25,8 +25,9 @@ public class Entity {
 	}
 	
 	public void update(GameContainer container, StateBasedGame game_, int delay) { }
-	public void render(GameContainer container, StateBasedGame game_, Graphics g) { 
-		sprite.draw(getPosition().x, getPosition().y);
+	public void render(GameContainer container, StateBasedGame game_, Graphics g) {
+		if (alive)
+			sprite.draw(getPosition().x, getPosition().y);
 	}
 	
 	public boolean collidesWith(Entity entity) {
@@ -45,6 +46,10 @@ public class Entity {
 	
 	public void setPosition(Vector2f position) {
 		this.position = position;
+	}
+	
+	public Vector2f getCenterPosition() {
+		return new Vector2f(position.x + sprite.getWidth() / 2, position.y + sprite.getHeight() / 2);
 	}
 	
 	public boolean isAlive() {

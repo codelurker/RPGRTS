@@ -23,9 +23,12 @@ public class Building extends Entity {
 	}
 	
 	@Override
+	public void update(GameContainer container, StateBasedGame game_, int delay) { }
+	
+	@Override
 	public void render(GameContainer container, StateBasedGame game_, Graphics g) { 
 		super.render(container, game_, g);
-		g.drawString(name, getPosition().x - (getSprite().getWidth() / 2), getPosition().y + (getSprite().getHeight()));
+		g.drawString(name + ":"+getPosition().x+","+getPosition().y, getPosition().x - (getSprite().getWidth() / 2), getPosition().y + (getSprite().getHeight()));
 	}
 	
 	public String getName() {

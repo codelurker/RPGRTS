@@ -17,33 +17,38 @@ public class Bullet extends Entity {
 	private Vector2f velocity;
 	private Entity owner;
 	private Vector2f direction;
+	private Vector2f target;
 	
 	public Bullet(Image sprite, Entity owner, Vector2f target, Map map) {
 		super(sprite, owner.getPosition().copy(), map);
 		this.owner = owner;
+		this.target = target.copy();
 		speed = 250;
-		direction = new Vector2f(512, 384).sub(target);
+		direction = owner.getCenterPosition().sub(target.copy());
 		direction.normalise();
-		velocity = new Vector2f(direction.x * speed * -1, direction.y * speed * -1);
+		velocity = new Vector2f(direction.x * speed * -1, direction.y * speed  *-1);
 	}
 	
 	public void update(GameContainer container, StateBasedGame game_, int delay) {
 		for (CollisionTile collision : getCurrentMap().getCollisionLayer()) {
 			if (CollisionHelper.intersectingShapes((int)getPosition().x, (int)getPosition().y, getSprite().getWidth(), getSprite().getHeight(),
 					(int)collision.getPosition().x, (int)collision.getPosition().y, collision.getWidth(), collision.getHeight())) {
-				setCollided(true);
+				setAlive(false);
 			}
 		}
 		
-		if (!isCollided())
+		if (isAlive()) {
+			direction = owner.getCenterPosition().sub(target.copy());
+			direction.normalise();
+			velocity = new Vector2f(direction.x * speed * -1, direction.y * speed  *-1);
 			getPosition().add(new Vector2f(velocity.x * (delay/1000.0f), velocity.y * (delay/1000.0f)));
-		else
+		} else
 			getCurrentMap().removeEntity(this);
 	}
 	
 	@Override
 	public void handleMapBoundCollision() {
-		setCollided(true);
+		setAlive(false);
 	}
 	
 	public int getSpeed() {
