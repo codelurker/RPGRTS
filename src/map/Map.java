@@ -65,17 +65,18 @@ public class Map {
 			
 			// Check for collision for enemies
 			if (currentEntity instanceof Enemy) {
+				Enemy enemy = (Enemy)currentEntity;
 				// Check for collision between enemy and buildings
 				for (Entity entity : getEntities(Building.class)) {
 					Building building = (Building) entity;
 					if (CollisionHelper.intersectingShapes(
-							(int)currentEntity.getPosition().x, 
-							(int)currentEntity.getPosition().y, 
-							currentEntity.getSprite().getWidth(), 
-							currentEntity.getSprite().getHeight(), 
+							(int)enemy.getPosition().x, 
+							(int)enemy.getPosition().y, 
+							enemy.getSprite().getWidth(), 
+							enemy.getSprite().getHeight(), 
 							(int)building.getPosition().x, (int)building.getPosition().y, building.getSprite().getWidth(), building.getSprite().getHeight())) {
 
-						entities.get(i).setCollided(true);
+						enemy.setCollided(true);
 					}
 				}
 				
@@ -83,15 +84,16 @@ public class Map {
 				for (Entity entity : getEntities(Bullet.class)) {
 					Bullet bullet = (Bullet) entity;
 					if (CollisionHelper.intersectingShapes(
-							(int)currentEntity.getPosition().x, (int)currentEntity.getPosition().y, 
-							currentEntity.getSprite().getWidth(), currentEntity.getSprite().getHeight(),
+							(int)enemy.getPosition().x, (int)enemy.getPosition().y, 
+							enemy.getSprite().getWidth(), enemy.getSprite().getHeight(),
 							(int)bullet.getPosition().x, (int)bullet.getPosition().y, 
 							bullet.getSprite().getWidth(), bullet.getSprite().getHeight())) {
 						
 						bullet.setAlive(false);
-						currentEntity.setAlive(false);
+						enemy.kill();
+						
 						entitiesToRemove.add(bullet);
-						entitiesToRemove.add(currentEntity);
+						entitiesToRemove.add(enemy);
 					}
 				}
 			}

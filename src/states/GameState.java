@@ -105,12 +105,21 @@ public class GameState extends BasicGameState {
 	}
 	
 	@Override
-	public void update(GameContainer container, StateBasedGame game_, int delay) {
+	public void update(final GameContainer container, final StateBasedGame game_, final int delay) {
 		
 		camera.update(container.getInput().getAbsoluteMouseX(), container.getInput().getAbsoluteMouseY(), currentMap.getTileMap().getWidth(), currentMap.getTileMap().getHeight());
 		currentMap.update(container, game_, delay);
 		player.update(container, game_, delay);
-		guiContainer.update(container, game_, delay, camera);
+		
+		// Update the GUI on a separate thread to prevent any "lag" with the GUI
+		Runnable guiRunnable = new Runnable() {
+			public void run() {
+				guiContainer.update(container, game_, delay, camera);
+			}
+		};
+		Thread guiThread = new Thread(guiRunnable);
+		
+		guiThread.start();
 		
 	}
 	

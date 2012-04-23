@@ -10,6 +10,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class Enemy extends Entity {
 
+	private EnemyListener listener;
+
 	public Enemy(Vector2f position, Image sprite, Map map) {
 		super(sprite, position, map);
 	}
@@ -29,7 +31,17 @@ public class Enemy extends Entity {
 		}
 	}
 	
-	public void handleCollisionWithPlayerBullets() {
-		System.out.println("Player's bullet collided with enemy.");
+	public void kill() {
+		setAlive(false);
+		if (listener != null)
+			listener.enemyKilled(this);
+	}
+	
+	public EnemyListener getListener() {
+		return listener;
+	}
+
+	public void setListener(EnemyListener listener) {
+		this.listener = listener;
 	}
 }

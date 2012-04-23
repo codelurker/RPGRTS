@@ -116,7 +116,7 @@ public class Player implements MouseListener {
 	}
 
 	@Override
-	public void mousePressed(int button, int x, int y) {		
+	public void mousePressed(int button, int x, int y) {
 		Vector2f worldMousePosition = new Vector2f(x - camera.getPosition().x, y - camera.getPosition().y);
 
 		if (building) {
@@ -141,13 +141,9 @@ public class Player implements MouseListener {
 			}
 			
 			if (validPlacement) {
-				
 				currentMap.addEntity((Entity) BuildingFactory.getBuilding(requestedBuilding, worldMousePosition, currentMap));
-				//new Building(requestedBuilding.toString(), ResourceManager.getBuildingSprite(requestedBuilding), worldMousePosition, currentMap, 0));
 				building = false;
 			}
-		} else {
-			
 		}		
 	}
 
