@@ -1,5 +1,9 @@
 package buildings;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import map.CollisionTile;
 import map.Map;
 
 import org.newdawn.slick.GameContainer;
@@ -10,6 +14,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import entities.Enemy;
 import entities.EnemyListener;
 
+import util.CollisionHelper;
 import util.ResourceManager;
 
 
@@ -31,7 +36,7 @@ public class Spawner extends Building {
 		spawnTime += delay;
 		if (spawnTime > spawnRate) {
 			if (spawns < 3) {
-				Enemy enemy = new Enemy(getPosition(), ResourceManager.getEnemySprite(SpawnerType.ENEMY1), getCurrentMap());
+				Enemy enemy = new Enemy(findSpawnPosition(), ResourceManager.getEnemySprite(SpawnerType.ENEMY1), getCurrentMap());
 				enemy.setListener(new EnemyListener() {
 					public void enemyKilled(Enemy enemy) {
 						spawns--;
@@ -42,6 +47,31 @@ public class Spawner extends Building {
 				spawns++;
 			}
 		}
+	}
+	
+	private Vector2f findSpawnPosition() {
+		Vector2f spawnPos = new Vector2f();
+		for (Vector2f position : getNeighborPositions()) {
+			for (CollisionTile collisionTile : this.getCurrentMap().getCollisionLayer()) {
+				if (!CollisionHelper.intersectingShapes(
+						(int)position.x, (int)position.y, 32, 32,
+						(int)collisionTile.getPosition().x, (int)collisionTile.getPosition().y, 32, 32)) {
+					spawnPos = position;
+				}
+			}
+		}
+		return spawnPos;
+	}
+	
+	private List<Vector2f> getNeighborPositions() {
+		List<Vector2f> positions = new ArrayList<Vector2f>();
+		
+		positions.add(new Vector2f(this.getPosition().x - 32, this.getPosition().y)); // Left
+		positions.add(new Vector2f(this.getPosition().x + this.getSprite().getWidth() + 32, this.getPosition().y)); // Right
+		positions.add(new Vector2f(this.getPosition().x, this.getPosition().y - 32)); // Top
+		positions.add(new Vector2f(this.getPosition().x, this.getPosition().y + this.getSprite().getHeight() + 32)); // Bottom
+		
+		return positions;
 	}
 	
 	public SpawnerType getType() {

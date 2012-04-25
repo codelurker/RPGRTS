@@ -48,7 +48,7 @@ public class Map {
 				}
 				Image spImg = tileMap.getTileImage(x, y, 2);
 				if (spImg != null) {
-					entities.add(BuildingFactory.CreateSpawner(new Vector2f(x * spImg.getWidth(), y * spImg.getHeight()), SpawnerType.ENEMY1, this, 0));
+					entities.add(BuildingFactory.CreateSpawner(new Vector2f(x * spImg.getWidth(), y * spImg.getHeight()), SpawnerType.ENEMY1, this, 1));
 				}
 			}
 		}

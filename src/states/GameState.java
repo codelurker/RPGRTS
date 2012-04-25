@@ -1,6 +1,7 @@
 package states;
 
 import java.awt.Dimension;
+import java.util.List;
 
 import map.Map;
 
@@ -11,6 +12,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
+import ai.Pathfinder;
 
 import util.ResourceManager;
 
@@ -45,7 +48,10 @@ public class GameState extends BasicGameState {
 		
 		player = new Player(currentMap, camera);
 		container.getInput().addMouseListener(player);
-		
+		//Pathfinder path = new Pathfinder(currentMap);
+		//List<Vector2f> pathList = path.FindPath(new Vector2f(0,0), new Vector2f(10,10));
+		//for(Vector2f point : pathList)
+		//	System.out.println(point.toString());
 		try {
 			Enemy enemy = new Enemy(new Vector2f(200,200), new Image("data/sprites/enemy-1.png"), currentMap);
 			currentMap.addEntity(enemy);
